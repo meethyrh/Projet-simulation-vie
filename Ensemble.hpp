@@ -1,3 +1,6 @@
+#ifndef ENSEMBLE_HPP
+#define ENSEMBLE_HPP
+
 #include <iostream>
 #include <array>
 using namespace std;
@@ -34,3 +37,5 @@ struct Ensemble{
 ostream& operator<<(ostream &out, Ensemble e);
 
 void swap(int &a, int &b);
+
+#endif
