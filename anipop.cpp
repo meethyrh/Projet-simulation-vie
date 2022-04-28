@@ -3,6 +3,7 @@
 #include <vector>
 #include <exception>
 #include "anipop.hpp"
+#include "doctest.h"
 
 using namespace std;
 
@@ -12,6 +13,10 @@ string Animal::toString()const{
         case Espece::Lapin: return "Lapin";
         default: return "Animal indéfini";
     } 
+}
+
+TEST_CASE("to string function"){
+
 }
 
 ostream & operator<<(ostream &out,const Animal a){
