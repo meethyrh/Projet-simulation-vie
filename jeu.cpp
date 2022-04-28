@@ -11,12 +11,12 @@ using namespace std;
 int main(){
     
     
-    Population p;
-    for(int i = 0;i<10;i++){
-        Animal a = {Espece::Lapin, {1,0}, p.reserve()};
-        p.set(a);
-    }
-    cout<<p;
+    // Population p;
+    // for(int i = 0;i<10;i++){
+    //     Animal a = {Espece::Lapin, {1,0}, p.reserve()};
+    //     p.set(a);
+    // }
+    // cout<<p;
     
 //     cout << a.toString() << endl;
 //     array<int, 6> n;
