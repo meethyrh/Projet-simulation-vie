@@ -8,7 +8,7 @@
 
 
 using namespace std;
-
+Coord::Coord(){}
 Coord::Coord(int lig,int col):ligne{lig},colonne{col}{
 	if(lig<0 or col<0 or lig>TAILLEGRILLE or col>TAILLEGRILLE){
 		throw invalid_argument("coordonnées en dehord de la grille");
@@ -77,10 +77,12 @@ TEST_CASE("test voisines"){
 
 
 
-ostream & Ensemble::operator<<(ostream &out) const{ 
+ostream & operator<<(ostream &out,const Ensemble e) { 
     out<<"{";
-    for(int i = 0;i<card;i++){
-		out << t[i] << " "; 
+    int ca = e.cardinal();
+    Ensemble e2= e;
+    for(int i = 0;i<ca;i++){
+		out << e2.tire() << " "; 
 	}
 	out<<"}";
 	return out;
@@ -95,8 +97,8 @@ int Ensemble::cardinal()const{
 };
 
 void Ensemble::ajoute(int n){
-    if(card>=MAXCARD-1){
-        throw runtime_error("ne peux pas ajouter car card>=MAXCARD-1");
+    if(card>=MAXCARD){
+        throw runtime_error("ne peux pas ajouter car card>=MAXCARD");
     }
     t[card]= n ;
     card++;

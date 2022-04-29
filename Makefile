@@ -7,17 +7,18 @@ all: jeu
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-jeu: coord.o anipop.o jeu.o
+jeu: coord.o anipop.o grilleGame.o jeu.o 
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 
-test: test.o coord.o anipop.o 
+test: test.o coord.o anipop.o grilleGame.o 
 	$(CXX) -o $@ $^ $(LDFLAGS)
     
 
 coord.o: coord.hpp
 anipop.o : anipop.hpp coord.hpp
-jeu.o: anipop.hpp coord.hpp
+grilleGame.o: anipop.hpp coord.hpp grilleGame.hpp
+jeu.o: anipop.hpp coord.hpp grilleGame.hpp
 
 check: test
 	./test

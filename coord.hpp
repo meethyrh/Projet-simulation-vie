@@ -15,6 +15,7 @@ class Coord{
         int colonne;
     public:
         //constructeurs de l'ensemble coord
+        Coord();
         Coord(int lig,int col);
         Coord(int n);
         //renvoie la ligne d'une coord
@@ -34,12 +35,11 @@ ostream &operator<<(ostream &out, const Coord c);
 bool operator==(const Coord c1, const Coord c2);
 
 class Ensemble{
-        array<int,MAXCARD> t;
+        array<int,MAXCARD+1> t;
         int card;
     public:
         Ensemble():card{0}{t.fill(0);};
-        // affichage d'un ensemble
-        ostream & operator<<(ostream &out)const;
+        
         //renvoie si l'ensemble est vide ou non
         bool estVide()const;
         //renvoie le cardinal de l'ensemble
@@ -50,10 +50,9 @@ class Ensemble{
         Pour cela on echange l'element de la case tirée aléatoirement avec l'element de la dernière case.
         On enlève ensuite l'element de la dernière case*/
         int tire();
-
-    
 };
-
+// affichage d'un ensemble
+ostream & operator<<(ostream &out,const Ensemble e);
 
 
 

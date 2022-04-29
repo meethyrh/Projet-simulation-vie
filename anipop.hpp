@@ -100,7 +100,7 @@ class Animal{
 ostream &operator<<(ostream &out, const Animal a);
 
 class Population{
-    array <Animal, MAXCARD> tabPop;
+    array <Animal, MAXCARD+1> tabPop;
     Ensemble casesVides;
     
     

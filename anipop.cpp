@@ -3,20 +3,15 @@
 #include <vector>
 #include <exception>
 #include "anipop.hpp"
-#include "doctest.h"
 
 using namespace std;
 
 string Animal::toString()const{
     switch(espece){
-        case Espece::Renard: return "Renard";    
-        case Espece::Lapin: return "Lapin";
-        default: return "Animal indéfini";
+        case Espece::Renard: return "R";    
+        case Espece::Lapin: return "L";
+        default: return ".";
     } 
-}
-
-TEST_CASE("to string function"){
-
 }
 
 ostream & operator<<(ostream &out,const Animal a){
@@ -26,7 +21,7 @@ ostream & operator<<(ostream &out,const Animal a){
 
 Population::Population(){
     tabPop.fill(Animal{});
-    for(int i = 0;i<MAXCARD-1;i++){
+    for(int i = 0;i<MAXCARD;i++){
         casesVides.ajoute(i);
     }
 }
@@ -39,19 +34,19 @@ void Population::set(Animal a){
     tabPop[a.getId()]=a;
 }
 void Population::supprime(int id){
-    if(casesVides.cardinal()==MAXCARD)throw runtime_error("impossible de supprimer un animal d'une population vide");
+    if(casesVides.cardinal()==MAXCARD+1)throw runtime_error("impossible de supprimer un animal d'une population vide");
     Animal a{};
     tabPop[id]=a;
     casesVides.ajoute(id);
 }
 
 Animal Population::get(int id)const{
-    if(id>=MAXCARD)throw invalid_argument("identifiant non existant");
+    if(id>=MAXCARD+1)throw invalid_argument("identifiant non existant");
     return tabPop[id];
 }
 Ensemble Population::getIds() const{
     Ensemble e;
-    for(int i = 0;i<MAXCARD-1;i++){
+    for(int i = 0;i<MAXCARD;i++){
         if(tabPop[i].getEspece()!=Espece::Vide){
             e.ajoute(i);
         }
