@@ -8,12 +8,22 @@
 
 using namespace std;
 
+const int FoodInit = 5;
+const int FoodLapin = 5;
+const int FoodReprod = 8;
+const int MaxFood = 10;
+const int ProbBirthRenard = 0.05;
+const int ProbBirthLapin = 5;
+const int MinFreeBirthLapin = 5;
+
+
 enum class Espece{Lapin,Renard,Vide};
 
 class Animal{
     Espece espece;
     Coord coord;
     int ident;
+    int nvNourriture;
     
     public:
     //Construit un animal avec une espèce donnée, ses coordonées et son identifiant
@@ -21,7 +31,7 @@ class Animal{
     param: espece, coord, int
     return Animal
     */
-    Animal(Espece e,Coord c ,int id):espece{e},coord{c},ident{id}{}
+    Animal(Espece e,Coord c ,int id):espece{e},coord{c},ident{id},nvNourriture{FoodInit}{}
 
     //Construit un animal corespondant à une case vide (un animal "Vide")
     /*
@@ -57,7 +67,8 @@ class Animal{
     return identifiant de l'animal
     */
     int getId()const{return ident;}
-
+    
+    int getFood()const{return nvNourriture;}
     //Renvoi l'éspcèce à laquelle appartient l'animal
     /*
     param: 
@@ -70,7 +81,7 @@ class Animal{
     param: int (identifiant de l'animal)
     return void
     */
-    void mange(int n);
+    void mange();
 
     // procédure qui augmente le niveau de faim d'un animal; si il a vraiment faim et qu'il jeune, il meurt
     /*
@@ -84,7 +95,7 @@ class Animal{
     param: 
     return void
     */
-    void meurt();
+    bool meurt();
 
     //Ajoute un animal à la population et met a jour la grille
     /*

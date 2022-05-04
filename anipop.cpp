@@ -14,6 +14,16 @@ string Animal::toString()const{
     } 
 }
 
+bool Animal::meurt(){
+    return nvNourriture <= 0;
+}
+
+void Animal::jeune(){
+    nvNourriture --;
+}
+void Animal::mange(){
+    nvNourriture = nvNourriture +FoodLapin;
+}
 ostream & operator<<(ostream &out,const Animal a){
     out << a.toString()<<" "<<a.getCoord()<<" "<<a.getId();
     return out;
@@ -35,6 +45,7 @@ void Population::set(Animal a){
 }
 void Population::supprime(int id){
     if(casesVides.cardinal()==MAXCARD+1)throw runtime_error("impossible de supprimer un animal d'une population vide");
+    if(id == -1)throw runtime_error("impossible de supprimer un animal vide");
     Animal a{};
     tabPop[id]=a;
     casesVides.ajoute(id);
@@ -42,7 +53,8 @@ void Population::supprime(int id){
 
 Animal Population::get(int id)const{
     if(id>=MAXCARD+1)throw invalid_argument("identifiant non existant");
-    return tabPop[id];
+    if(id>-1)return tabPop[id];
+    else return Animal{};
 }
 Ensemble Population::getIds() const{
     Ensemble e;

@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS= -Wall -std=c++11 -g -O3
+CXXFLAGS= -Wall -std=c++11 -g -O3 -lsfml-graphics -lsfml-window -lsfml-system
 EXEC_FILES= test jeu
 
 all: jeu
@@ -24,4 +24,4 @@ check: test
 	./test
 
 clean:
-	rm -f *.o $(EXEC_FILES)
+	rm -f *.o $(EXEC_FILES) core.*

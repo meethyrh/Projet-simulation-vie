@@ -42,25 +42,30 @@ ostream &operator<<(ostream &out, const Grille grille) {
 
 
 void Game::ajouteAnimal(Espece e,Coord c){
+    if(e == Espece::Vide)throw runtime_error("impossible ajoue animal vide (action inutile)");
     int id = pop.reserve();
-    grille.setCase(id,c);
     Animal a{e,c,id};
     pop.set(a);
+    grille.setCase(id,c);
+    
 
 }
 
 void Game::supprimeAnimal(Coord c){
     int id = grille.getCase(c);
     pop.supprime(id);
+    grille.videCase(c);
 }
 
 void Game::deplaceAnimal(Coord c1,Coord c2){
+    //cout <<grille<<endl;
     Animal a = getAnimal(c1);
     int id = a.getId();
     grille.setCase(id,c2);
     grille.videCase(c1);
     a.setCoord(c2);
     pop.set(a);
+    //cout <<grille<<endl;
 
 }
 
@@ -73,9 +78,6 @@ Game::Game(int probR,int probL):grille{},pop{}{
         }
         else if(alea>=probR and alea<probR+probL){
             ajouteAnimal(Espece::Lapin,c);
-        }
-        else{
-            ajouteAnimal(Espece::Vide,c);
         }
     }
 }
@@ -95,16 +97,50 @@ Animal Game::getAnimal(Coord c)const{
     return pop.get(id);
 }
 void Game::bougeLapin(Coord c){
-    if(getAnimal(c).getEspece() == Espece::Lapin){
+    Animal a = getAnimal(c);
+    if(a.getEspece() == Espece::Lapin){
         Ensemble vois = c.voisines();
         Coord coordVois;
         do{
             coordVois= Coord {vois.tire()};
-        }while(not grille.caseVide(coordVois) and not vois.estVide());
-        cout<<c << " " <<coordVois<<endl;
+        }while( not grille.caseVide(coordVois) and not vois.estVide());
+        //cout<<c << " " <<coordVois<<endl;
         if(not vois.estVide()){
             deplaceAnimal(c,coordVois);
         }
     }
 
+}
+void Game::bougeRenard(Coord c){
+    Animal a = getAnimal(c);
+    
+    if(a.getEspece() == Espece::Renard){
+        a.jeune();
+        if(a.meurt()){
+            supprimeAnimal(c);
+            return;
+        }
+        Ensemble vois = c.voisines();
+        Coord coordVois;
+        Coord coordVoisVide;
+        bool existeVide = false;
+        Animal a2;
+        do{
+            coordVois= Coord {vois.tire()};
+            if(grille.caseVide(coordVois)){
+                existeVide = true;
+                coordVoisVide = coordVois;
+            }
+            a2= getAnimal(coordVois);
+        }while( not (a2.getEspece()==Espece::Lapin and a.getFood()<MaxFood ) and not vois.estVide());
+        if(a2.getEspece()==Espece::Lapin  and a.getFood()<MaxFood ){
+            supprimeAnimal(coordVois);
+            deplaceAnimal(c,coordVois);
+            a.mange();
+        }else if(existeVide){
+            deplaceAnimal(c,coordVoisVide);
+        }
+        
+        pop.set(a);
+    }
 }
