@@ -44,7 +44,7 @@ int main(){
             tourLapin = not tourLapin;
             for(int i =0;i<TAILLEGRILLE;i++){
                 for(int j =0;j<TAILLEGRILLE;j++){
-                    Animal a = getAnimal({i,j});
+                    Animal a = g.getAnimal({i,j});
                     if(a.getEspece() == Espece::Lapin){
                         draw_filled_rectangle(window, {i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color::Green);
                     }
