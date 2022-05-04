@@ -47,10 +47,10 @@ int main(){
                 for(int j =0;j<TAILLEGRILLE;j++){
                     Animal a = g.getAnimal({i,j});
                     if(a.getEspece() == Espece::Lapin){
-                        draw_filled_rectangle(window, {i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color::Green);
+                        draw_filled_rectangle(window, {float(i* TailleCase),float(j*TailleCase)}, TailleCase, TailleCase, Color::Green);
                     }
                     if(a.getEspece() == Espece::Renard){
-                        draw_filled_rectangle(window, {i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color::Red);
+                        draw_filled_rectangle(window, {float(i* TailleCase),float(j*TailleCase)}, TailleCase, TailleCase, Color::Red);
                     }
                 }
             }
