@@ -11,6 +11,7 @@
 using namespace sf;
 using namespace std;
 
+
 int main(){
     string mode = "sfml";
     Game g{10,10};
