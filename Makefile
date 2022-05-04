@@ -8,7 +8,7 @@ all: jeu
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
 jeu: coord.o anipop.o grilleGame.o jeu.o 
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) -o $@ $^ $(LDFLAGS) -lsfml-graphics -lsfml-window -lsfml-system
 
 
 test: test.o coord.o anipop.o grilleGame.o 
