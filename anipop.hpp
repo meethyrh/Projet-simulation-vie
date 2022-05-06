@@ -4,18 +4,24 @@
 #include <array>
 #include <iostream>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 #include "coord.hpp"
 
 using namespace std;
+
+const bool versAge = false;  
+const bool versReprodSexuee = true; 
 
 const int FoodInit = 5;
 const int FoodLapin = 5;
 const int FoodReprod = 8;
 const int MaxFood = 10;
-const int ProbBirthRenard = 0.05;
-const int ProbBirthLapin = 5;
+const float ProbBirthRenard = 0.05;
+const float ProbBirthLapin = 0.3;
 const int MinFreeBirthLapin = 5;
-
+const int DureeDeVieLapin = 500;
+const int DureeDeVieRenard = 1500;
 
 enum class Espece{Lapin,Renard,Vide};
 
@@ -24,6 +30,8 @@ class Animal{
     Coord coord;
     int ident;
     int nvNourriture;
+    int age;
+    bool sexe;
     
     public:
     //Construit un animal avec une espèce donnée, ses coordonées et son identifiant
@@ -31,7 +39,7 @@ class Animal{
     param: espece, coord, int
     return Animal
     */
-    Animal(Espece e,Coord c ,int id):espece{e},coord{c},ident{id},nvNourriture{FoodInit}{}
+    Animal(Espece e,Coord c ,int id):espece{e},coord{c},ident{id},nvNourriture{FoodInit},age{0},sexe {rand()%100>50}{}
 
     //Construit un animal corespondant à une case vide (un animal "Vide")
     /*
@@ -69,6 +77,10 @@ class Animal{
     int getId()const{return ident;}
     
     int getFood()const{return nvNourriture;}
+    
+    int getAge()const{return age;}
+	
+	bool getSexe()const{return sexe;}
     //Renvoi l'éspcèce à laquelle appartient l'animal
     /*
     param: 
@@ -104,6 +116,8 @@ class Animal{
     */
     bool seReproduit();
     
+    void vieilli();
+    
     
 };  
 
@@ -113,7 +127,12 @@ ostream &operator<<(ostream &out, const Animal a);
 class Population{
     array <Animal, MAXCARD+1> tabPop;
     Ensemble casesVides;
-    
+    int nbRenard;
+    int nbLapin;
+    float sommeDureeLapin;
+	float nbMortLapin;
+	float sommeDureeRenard;
+	float nbMortRenard;
     
     public:
     //Construit une population vide
@@ -125,7 +144,12 @@ class Population{
     return Animal d'identifiant id
     */
     Animal get(int id)const;
-    
+    int getNbRenard()const{return nbRenard;}
+    int getNbLapin()const{return nbLapin;}
+    float getSommeDureeLapin()const{return sommeDureeLapin;}
+    float getNbMortLapin()const{return nbMortLapin;}
+    float getSommeDureeRenard()const{return sommeDureeRenard;}
+    float getNbMortRenard()const{return nbMortRenard;}
     //Donne l'ensemble des animaux qui existe ou ne sont pas mort dans la population
     /*
     param: 

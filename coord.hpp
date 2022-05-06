@@ -6,8 +6,8 @@
 
 using namespace std;
 
-const int TAILLEGRILLE = 10;
-const int MAXCARD = 100;
+const int TAILLEGRILLE = 100;
+const int MAXCARD = TAILLEGRILLE * TAILLEGRILLE;
 
 class Ensemble;
 class Coord{

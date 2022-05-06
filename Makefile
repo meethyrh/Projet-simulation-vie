@@ -1,16 +1,15 @@
 CXX=g++
-CXXFLAGS= -Wall -std=c++11 -g -O3 -lsfml-graphics -lsfml-window -lsfml-system
-LDFLAGS=
+CXXFLAGS= -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
+LDFLAGS= -Wall -std=c++11 -g -O3 -lpdcurses -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -L "C:\SFML-2.5.1\lib" -lsfml-graphics -lsfml-window -lsfml-system 
 EXEC_FILES= test jeu
-sfmlvar= -lsfml-graphics -lsfml-window -lsfml-system
 
 all: jeu
 # Regle generique
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-jeu: coord.o anipop.o grilleGame.o jeu.o primitives.o
-	$(CXX) -o $@ $^ $(LDFLAGS) $(sfmlvar)
+jeu: coord.o anipop.o grilleGame.o jeu.o primitives.o 
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
 
 test: test.o coord.o anipop.o grilleGame.o 
@@ -20,8 +19,8 @@ test: test.o coord.o anipop.o grilleGame.o
 coord.o: coord.hpp
 anipop.o : anipop.hpp coord.hpp
 grilleGame.o: anipop.hpp coord.hpp grilleGame.hpp
-primitives.o: primitives.h
-jeu.o: anipop.hpp coord.hpp grilleGame.hpp primitives.h
+primitives.o : primitives.hpp
+jeu.o: anipop.hpp coord.hpp grilleGame.hpp primitives.hpp
 
 check: test
 	./test

@@ -15,7 +15,17 @@ string Animal::toString()const{
 }
 
 bool Animal::meurt(){
-    return nvNourriture <= 0;
+    if(nvNourriture <= 0 )return true;
+    if(versAge){
+		if(espece==Espece::Lapin and age >= DureeDeVieLapin){
+			return true;
+		}
+		if(espece==Espece::Renard and age >= DureeDeVieRenard){
+			return true;
+		}
+	}
+	return false;
+	
 }
 
 void Animal::jeune(){
@@ -23,6 +33,14 @@ void Animal::jeune(){
 }
 void Animal::mange(){
     nvNourriture = nvNourriture +FoodLapin;
+}
+
+bool Animal::seReproduit(){
+	return nvNourriture>=FoodReprod;
+}
+
+void Animal::vieilli(){
+	age++;
 }
 ostream & operator<<(ostream &out,const Animal a){
     out << a.toString()<<" "<<a.getCoord()<<" "<<a.getId();
@@ -34,6 +52,12 @@ Population::Population(){
     for(int i = 0;i<MAXCARD;i++){
         casesVides.ajoute(i);
     }
+    nbLapin=0;
+    nbRenard=0;
+    sommeDureeLapin = 0;
+	nbMortLapin = 0;
+	sommeDureeRenard = 0 ;
+	nbMortRenard=0;
 }
 
 int Population::reserve(){
@@ -41,12 +65,28 @@ int Population::reserve(){
     return casesVides.tire();
 }
 void Population::set(Animal a){
+	if(a.getEspece()==Espece::Vide)throw runtime_error("impossible d'ajouter un animal vide a la pop");
+	else if(tabPop[a.getId()].getEspece()==Espece::Vide){
+		if(a.getEspece()==Espece::Lapin)nbLapin++;
+		if(a.getEspece()==Espece::Renard)nbRenard++;
+	}
+	else if(a.getEspece()!=tabPop[a.getId()].getEspece())throw runtime_error("impossible de modifier l'espece");
     tabPop[a.getId()]=a;
 }
 void Population::supprime(int id){
     if(casesVides.cardinal()==MAXCARD+1)throw runtime_error("impossible de supprimer un animal d'une population vide");
     if(id == -1)throw runtime_error("impossible de supprimer un animal vide");
     Animal a{};
+    if(tabPop[id].getEspece()==Espece::Lapin){
+		nbLapin--;
+		nbMortLapin++;
+		sommeDureeLapin = sommeDureeLapin + tabPop[id].getAge();
+	}
+	if(tabPop[id].getEspece()==Espece::Renard){
+		nbRenard--;
+		nbMortRenard++;
+		sommeDureeRenard = sommeDureeRenard + tabPop[id].getAge();
+	}
     tabPop[id]=a;
     casesVides.ajoute(id);
 }

@@ -1,4 +1,4 @@
-#include "primitives.h"
+#include "primitives.hpp"
 #include <assert.h>
 #include <cmath>
 #include <iostream>
