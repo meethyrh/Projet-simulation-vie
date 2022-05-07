@@ -1,6 +1,6 @@
 CXX=g++
-CXXFLAGS= -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
-LDFLAGS= -Wall -std=c++11 -g -O3 -lpdcurses -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -L "C:\SFML-2.5.1\lib" -lsfml-graphics -lsfml-window -lsfml-system 
+CXXFLAGS= -Wall -std=c++11 -g -O3 
+LDFLAGS= -Wall -std=c++11 -g -O3 -lpdcurses -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -L -lsfml-graphics -lsfml-window -lsfml-system 
 EXEC_FILES= test jeu
 
 all: jeu

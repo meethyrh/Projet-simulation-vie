@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_TTF.h"
+#include "SDL2/SDL_ttf.h"
 #include <cstdlib>
 #include <ctime>
 #include <curses.h>
