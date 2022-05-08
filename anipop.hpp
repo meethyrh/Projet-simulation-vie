@@ -77,11 +77,27 @@ class Animal{
     */
     int getId()const{return ident;}
     
-    int getFood()const{return nvNourriture;}
-    
+    // renvoie l'age d'un animal;
+    /*
+    param:
+    return: int, l'age de l'animal
+    */ 
     int getAge()const{return age;}
 	
+    //renvoie le sexe de l'animal
+    /*
+    param: 
+    return: true = un sexe, false l'autre
+    */
 	bool getSexe()const{return sexe;}
+
+    //renvoie le niveau de nourriture d'un animal (renard)
+    /*
+    param:
+    return: int, son niveau de nourriture
+    */
+    int getFood() const{return nvNourriture;}
+
     //Renvoi l'éspcèce à laquelle appartient l'animal
     /*
     param: 
@@ -117,6 +133,11 @@ class Animal{
     */
     bool seReproduit();
     
+    // augmente l'age d'un animal
+    /*
+    param: 
+    return: void
+    */
     void vieilli();
     
     
@@ -146,14 +167,63 @@ class Population{
     return Animal d'identifiant id
     */
     Animal get(int id)const;
+
+    //renvoie le nombre de renard dans une population
+    /*
+    param:
+    return: entier, le nombre de renard
+    */
     int getNbRenard()const{return nbRenard;}
+
+    // renvoie le nombre de lapin
+    /*
+    param:
+    return: entier, le nombre de lapin
+    */
     int getNbLapin()const{return nbLapin;}
+
+    // renvoie la somme des durrées de vie de tous les Lapins
+    /*
+    param: 
+    return: float
+    */
     float getSommeDureeLapin()const{return sommeDureeLapin;}
+
+    // renvoie le nombre de mort de Lapin
+    /*
+    param: 
+    return: float, le nombre de mort des lapins
+    */
     float getNbMortLapin()const{return nbMortLapin;}
+
+    //renvoie la somme des durrées de vie de tous les Renards
+    /*
+    param:
+    return: float
+    */
     float getSommeDureeRenard()const{return sommeDureeRenard;}
+
+    //renvoie le nombre de mort de renard
+    /*
+    param:
+    return: float
+    */
     float getNbMortRenard()const{return nbMortRenard;}
+
+    // renvoie la durée de vie maximale d'un lapin
+    /*
+    param: 
+    return: float
+    */
     float getMaxDureeLapin()const{return maxDureeLapin;}
+
+    // renvoie la durée de vie maximale d'un renard
+    /*
+    param:
+    return: float
+    */
     float getMaxDureeRenard()const{return maxDureeRenard;}
+
     //Donne l'ensemble des animaux qui existe ou ne sont pas mort dans la population
     /*
     param: 

@@ -114,7 +114,7 @@ Animal Game::getAnimal(Coord c)const{
     int id = grille.getCase(c);
     return pop.get(id);
 }
-bool Game::trouverAmour(Coord c)const{
+bool Game::trouverAmour(Coord c){
 	if(not (versReprodEntreEspece) and not (versReprodSexuee))return true;
 	Animal a = getAnimal(c);
 	Espece espA = a.getEspece();
