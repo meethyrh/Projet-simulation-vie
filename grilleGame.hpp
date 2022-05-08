@@ -17,6 +17,11 @@ class Grille{
     public:
     Grille();
     
+    /*
+    
+    param:
+    return: 
+    */
     bool caseVide(Coord c)const;
     int getCase(Coord c)const;
 
