@@ -22,6 +22,7 @@ class Grille{
 
     void videCase(Coord c);
     void setCase(int id,Coord c);
+    
 
 };
 ostream &operator<<(ostream &out, const Grille grille);
@@ -38,10 +39,14 @@ class Game{
     void ajouteAnimal(Espece e,Coord c);
     void supprimeAnimal(Coord c);
     void deplaceAnimal(Coord c1,Coord c2);
-    bool trouverAmour(Coord c);
+    Ensemble voisinsVides(Coord c)const;
+    Ensemble voisinsEspece(Coord c,Espece e)const;
+    bool trouverAmour(Coord c)const;
     void bougeLapin();
     void bougeRenard();
-    void afficheRepartion();
+    void verifieGrille()const;
+    void afficheDonnee();
+    
 }; 
 ostream &operator<<(ostream &out, const Game g);
 

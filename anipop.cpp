@@ -58,6 +58,8 @@ Population::Population(){
 	nbMortLapin = 0;
 	sommeDureeRenard = 0 ;
 	nbMortRenard=0;
+	maxDureeLapin = 0;
+	maxDureeRenard = 0;
 }
 
 int Population::reserve(){
@@ -71,7 +73,10 @@ void Population::set(Animal a){
 		if(a.getEspece()==Espece::Renard)nbRenard++;
 	}
 	else if(a.getEspece()!=tabPop[a.getId()].getEspece())throw runtime_error("impossible de modifier l'espece");
+	if(a.getEspece() == Espece::Lapin and a.getAge()>maxDureeLapin )maxDureeLapin = a.getAge();
+	if(a.getEspece() == Espece::Renard and a.getAge()>maxDureeRenard )maxDureeRenard = a.getAge();
     tabPop[a.getId()]=a;
+    
 }
 void Population::supprime(int id){
     if(casesVides.cardinal()==MAXCARD+1)throw runtime_error("impossible de supprimer un animal d'une population vide");

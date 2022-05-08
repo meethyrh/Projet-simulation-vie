@@ -10,18 +10,19 @@
 
 using namespace std;
 
-const bool versAge = false;  
-const bool versReprodSexuee = true; 
+const bool versAge = true;
+const bool versReprodEntreEspece = false;
+const bool versReprodSexuee = false; 
 
 const int FoodInit = 5;
 const int FoodLapin = 5;
 const int FoodReprod = 8;
 const int MaxFood = 10;
-const float ProbBirthRenard = 0.05;
-const float ProbBirthLapin = 0.3;
+const float ProbBirthRenard = 0.05 ;//+ int(versReprodEntreEspece)*5*0.05+ int(versReprodSexuee)*10*0.05;
+const float ProbBirthLapin = 0.3 ;//+ int(versReprodEntreEspece)*5*0.3+ int(versReprodSexuee)*10*0.3;
 const int MinFreeBirthLapin = 5;
-const int DureeDeVieLapin = 500;
-const int DureeDeVieRenard = 1500;
+const int DureeDeVieLapin = 100;
+const int DureeDeVieRenard = 200;
 
 enum class Espece{Lapin,Renard,Vide};
 
@@ -133,7 +134,8 @@ class Population{
 	float nbMortLapin;
 	float sommeDureeRenard;
 	float nbMortRenard;
-    
+    float maxDureeLapin;
+	float maxDureeRenard;
     public:
     //Construit une population vide
     Population();
@@ -150,6 +152,8 @@ class Population{
     float getNbMortLapin()const{return nbMortLapin;}
     float getSommeDureeRenard()const{return sommeDureeRenard;}
     float getNbMortRenard()const{return nbMortRenard;}
+    float getMaxDureeLapin()const{return maxDureeLapin;}
+    float getMaxDureeRenard()const{return maxDureeRenard;}
     //Donne l'ensemble des animaux qui existe ou ne sont pas mort dans la population
     /*
     param: 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL_TTF.h"
 #include <cstdlib>
 #include <ctime>
 #include <curses.h>
@@ -76,15 +76,15 @@ int main( int argc, char* args[]){
 		SDL_Rect rect;
 		SDL_Init(SDL_INIT_VIDEO);
 		initscr();	
-		TTF_Init();
+		//~ TTF_Init();
 		float TailleFenetre = 600;
         float TailleCase = TailleFenetre / TAILLEGRILLE;
 		SDL_CreateWindowAndRenderer(TailleFenetre, TailleFenetre, SDL_WINDOW_SHOWN, &window, &window_renderer);
-		TTF_Font* font;
-		font = TTF_OpenFont("arial_narrow_7.ttf",200);//"arial_narrow_7.ttf"
-		if ( !font ) {
-			cout << "Failed to load font: " << TTF_GetError() << endl;
-		}
+		//~ TTF_Font* font;
+		//~ font = TTF_OpenFont("arial_narrow_7.ttf",200);//"arial_narrow_7.ttf"
+		//~ if ( !font ) {
+			//~ cout << "Failed to load font: " << TTF_GetError() << endl;
+		//~ }
 		SDL_Event events;
 		bool isOpen = true;
 		
@@ -95,7 +95,7 @@ int main( int argc, char* args[]){
 				switch (events.type){
 					case SDL_QUIT:
 						isOpen = false;
-						TTF_CloseFont(font);
+						//~ TTF_CloseFont(font);
 						SDL_DestroyRenderer( window_renderer );
 						SDL_DestroyWindow( window );
 						window  = NULL;
@@ -127,15 +127,17 @@ int main( int argc, char* args[]){
             }
             SDL_RenderPresent(window_renderer);
             refresh();
-            g.afficheRepartion();
+            g.afficheDonnee();
+            SDL_Delay(10);
 		}
 		
 	}
-    else{
-        for(int i =0;i<5;i++){
+    if(mode == "classic"){
+        for(int i =0;i<10;i++){
 			g.bougeLapin();
 			g.bougeRenard();
             cout<<g<<endl;
+            g.afficheDonnee();
         }  
     }
     return 0;
