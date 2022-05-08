@@ -15,19 +15,42 @@ class Grille{
     array<array<int,TAILLEGRILLE>,TAILLEGRILLE> grille;
 
     public:
+    //création d'une grille vide (avec que des indentifiant = -1)
+    /*
+    param:
+    return: une grille
+    */
     Grille();
     
+
+    //Vérifie si une case de coordonnée c est vide ou non
+    //si oui renvoie true, si non renvoi false
     /*
-    
-    param:
-    return: 
+    param: coordonnée de  la case à vérifier
+    return: bool
     */
     bool caseVide(Coord c)const;
+
+    //renvoi l'indentifiant de la case au coordonnées c
+    /*
+    param: les coordonnées de la case
+    return: l'identifiant 
+    */
     int getCase(Coord c)const;
 
+    //vide une case de coordonnée "c" de la grille (transforme l'identifiant en -1)
+    /*
+    param: coordonnées de la case à vider
+    return: void
+    */
     void videCase(Coord c);
+
+    //change l'identifiant d'une case de coordonnée connu en un nouvel identifiant id 
+    /*
+    param: le nouvel identifiant, les coordonnées de l'id à changer
+    return: void
+    */
     void setCase(int id,Coord c);
-    
 
 };
 ostream &operator<<(ostream &out, const Grille grille);
