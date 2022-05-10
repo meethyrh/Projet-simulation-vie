@@ -145,7 +145,21 @@ class Game{
     param:
     return: void
     */
-    void afficheDonnee();
+    void afficheDonnee()const;
+
+    //affiche la grille
+    /*
+    param:
+    return: void
+    */
+    void afficheGrille()const;
+
+    //Renvoi la valeure contenue dans une case de coordonnée c dans la grille
+    /*
+    param: coordonnée de la case
+    return: int; la valeur dans la case
+    */
+    int getCaseGame(Coord c)const;
     
 }; 
 ostream &operator<<(ostream &out, const Game g);

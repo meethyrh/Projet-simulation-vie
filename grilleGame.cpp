@@ -1,5 +1,6 @@
 #include <array>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <exception>
 #include "grilleGame.hpp"
@@ -31,7 +32,7 @@ void Grille::setCase(int id,Coord c){
 ostream &operator<<(ostream &out, const Grille grille) {
     for(int i = 0; i<TAILLEGRILLE;i++){
         for(int j = 0; j<TAILLEGRILLE;j++){
-            out << grille.getCase({i,j}) << " ";
+            out <<setw(2)<< grille.getCase({i,j}) << " ";
         }
         out << endl;
     }
@@ -48,6 +49,14 @@ Game::Game(int probR,int probL):grille{},pop{}{
             ajouteAnimal(Espece::Lapin,c);
         }
     }
+}
+
+int Game::getCaseGame(Coord c)const{
+	return grille.getCase(c);
+}
+Animal Game::getAnimal(Coord c)const{
+    int id = grille.getCase(c);
+    return pop.get(id);
 }
 
 void Game::ajouteAnimal(Espece e,Coord c){
@@ -110,10 +119,7 @@ Ensemble Game::voisinsEspece(Coord c,Espece e)const{
 }
 
 
-Animal Game::getAnimal(Coord c)const{
-    int id = grille.getCase(c);
-    return pop.get(id);
-}
+
 bool Game::trouverAmour(Coord c){
 	if(not (versReprodEntreEspece) and not (versReprodSexuee))return true;
 	Animal a = getAnimal(c);
@@ -126,88 +132,77 @@ bool Game::trouverAmour(Coord c){
 	while(not voisEsp.estVide()){
 		coordVois= Coord {voisEsp.tire()};
 		a2= getAnimal(coordVois);
-		if( a.getSexe() == a2.getSexe() and versReprodSexuee)return true;
+		if( a.getSexe() != a2.getSexe() and versReprodSexuee)return true;
 	}
 	return false;
 }
 
 
 void Game::bougeLapin(){
-	Grille CasesVisite;
-	Ensemble CasesPourAlea;
-	for(int i =0;i<TAILLEGRILLE*TAILLEGRILLE;i++)CasesPourAlea.ajoute(i);
-	while(not CasesPourAlea.estVide()){
-		Coord c{CasesPourAlea.tire()};
-		if(CasesVisite.getCase(c)==-1){
-			Animal a = getAnimal(c);
-			if(a.getEspece() == Espece::Lapin){
-				a.vieilli();
-				pop.set(a);
-				Ensemble voisVides = voisinsVides(c);
-				if(a.meurt()){
-					supprimeAnimal(c);
-				}else{
-					bool reprodPossible = false;
-					if(voisVides.cardinal()>=MinFreeBirthLapin and trouverAmour(c))reprodPossible=true;
-					
-					if(not voisVides.estVide()){
-						Coord coordVois = Coord {voisVides.tire()};
-						deplaceAnimal(c,coordVois);
-						CasesVisite.setCase(1,coordVois);
-						//~ cout <<reprodPossible<<endl;
-						if( reprodPossible and rand()%100 < ProbBirthLapin*100){
-							ajouteAnimal(Espece::Lapin,c);
-						}
+	Ensemble ensIds =pop.getIds();
+	while(not ensIds.estVide()){
+		int id = ensIds.tire();
+		Animal a = pop.get(id);
+		Coord c = a.getCoord();
+		if(a.getEspece() == Espece::Lapin){
+			a.vieilli();
+			pop.set(a);
+			Ensemble voisVides = voisinsVides(c);
+			if(a.meurt()){
+				supprimeAnimal(c);
+			}else{
+				bool reprodPossible = false;
+				if(voisVides.cardinal()>=MinFreeBirthLapin and trouverAmour(c))reprodPossible=true;
+				
+				if(not voisVides.estVide()){
+					Coord coordVois = Coord {voisVides.tire()};
+					deplaceAnimal(c,coordVois);
+					//~ cout <<reprodPossible<<endl;
+					if( reprodPossible and rand()%100 < ProbBirthLapin*100){
+						ajouteAnimal(Espece::Lapin,c);
 					}
 				}
-				
 			}
 		}
 	}
 
 }
 void Game::bougeRenard(){
-	Grille CasesVisite;
-	Ensemble CasesPourAlea;
-	for(int i =0;i<TAILLEGRILLE*TAILLEGRILLE;i++)CasesPourAlea.ajoute(i);
-	while(not CasesPourAlea.estVide()){
-		Coord c{CasesPourAlea.tire()};
-		if(CasesVisite.getCase(c)==-1){
-			Animal a = getAnimal(c);
-			if(a.getEspece() == Espece::Renard){
-				a.jeune();
-				a.vieilli();
-				pop.set(a);
-				//~ cout <<a.getFood()<<endl;
-				if(a.meurt()){
-					supprimeAnimal(c);
-				}else{
-					Ensemble voisVides = voisinsVides(c);
-					
-					Ensemble voisLapin = voisinsEspece(c,Espece::Lapin);
-					bool reprodPossible=false;
-					if(trouverAmour(c))reprodPossible=true;
-					Coord coordVois;
-					
-					bool deplacement=false;
-					if(not (voisLapin.estVide())  and a.getFood()<=MaxFood -FoodLapin){
-						coordVois= Coord {voisLapin.tire()};
-						a.mange();
-						pop.set(a);
-						supprimeAnimal(coordVois);
-						deplaceAnimal(c,coordVois);
-						CasesVisite.setCase(1,coordVois);
-						deplacement=true;
-					}else if(not (voisVides.estVide())){
-						coordVois= Coord {voisVides.tire()};
-						deplaceAnimal(c,coordVois);
-						CasesVisite.setCase(1,coordVois);
-						deplacement=true;
-						
-					}
-					if(deplacement==true and a.seReproduit() and rand()%100 < ProbBirthRenard*100 and reprodPossible ){
-						ajouteAnimal(Espece::Renard,c);
-					}
+	Ensemble ensIds =pop.getIds();
+	while(not ensIds.estVide()){
+		int id = ensIds.tire();
+		Animal a = pop.get(id);
+		Coord c = a.getCoord();
+		if(a.getEspece() == Espece::Renard){
+			a.jeune();
+			a.vieilli();
+			pop.set(a);
+			//~ cout <<a.getFood()<<endl;
+			if(a.meurt()){
+				supprimeAnimal(c);
+			}else{
+				Ensemble voisVides = voisinsVides(c);
+				
+				Ensemble voisLapin = voisinsEspece(c,Espece::Lapin);
+				bool reprodPossible=false;
+				if(trouverAmour(c))reprodPossible=true;
+				Coord coordVois;
+				
+				bool deplacement=false;
+				if(not (voisLapin.estVide())  and a.getFood()<=MaxFood -FoodLapin){
+					coordVois= Coord {voisLapin.tire()};
+					a.mange();
+					pop.set(a);
+					supprimeAnimal(coordVois);
+					deplaceAnimal(c,coordVois);
+					deplacement=true;
+				}else if(not (voisVides.estVide())){
+					coordVois= Coord {voisVides.tire()};
+					deplaceAnimal(c,coordVois);
+					deplacement=true;
+				}
+				if(deplacement==true and a.seReproduit() and rand()%100 < ProbBirthRenard*100 and reprodPossible ){
+					ajouteAnimal(Espece::Renard,c);
 				}
 			}
 		}
@@ -217,10 +212,17 @@ void Game::verifieGrille()const{
 	for(int id= 0;id<TAILLEGRILLE * TAILLEGRILLE;id++){
 		Animal a = pop.get(id);
 		if( a.getEspece()!=Espece::Vide){
-			if(a.getId() != id)throw runtime_error("probleme d'assignation d'id des animaux");
+			if(a.getId() != id)throw runtime_error("probleme d'assignation d'id des animaux dans pop");
 			Coord c = a.getCoord();
 			int idAnimGrille = grille.getCase(c);
-			if(idAnimGrille != id)throw runtime_error("probleme de localisation des animaux");
+			if(idAnimGrille != id)throw runtime_error("probleme de localisation des animaux entre grille et pop");
+		}
+	}
+	for(int c= 0;c<TAILLEGRILLE * TAILLEGRILLE;c++){
+		int id = grille.getCase(c);
+		if( id!=-1){
+			Animal a = pop.get(id);
+			if(a.getEspece()==Espece::Vide)throw runtime_error("animal dans grille n'existe pas dans la pop");
 		}
 	}
 	cout<<"aucune dectection de probleme  avec verifieGrille";
@@ -236,7 +238,7 @@ ostream &operator<<(ostream &out, const Game g){
     return out;
 }
 
-void Game::afficheDonnee(){
+void Game::afficheDonnee()const{
 	cout<<"nombre de lapin : "<<pop.getNbLapin()<<endl;
     cout<<"nombre de renard : "<<pop.getNbRenard()<<endl;
     cout<<"duree de vie moyenne d'un lapin : "<<pop.getSommeDureeLapin() / pop.getNbMortLapin()<<endl;
@@ -249,6 +251,10 @@ void Game::afficheDonnee(){
     //~ cout<<"2 : "<< pop.getNbMortLapin()<<endl;
     //~ cout<<"3 : "<<pop.getSommeDureeRenard()<<endl;
     //~ cout<<"4 : "<< pop.getNbMortRenard()<<endl;
+}
+
+void Game::afficheGrille()const{
+	cout<<grille;	
 }
 
 

@@ -1,0 +1,9 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/rmitia/ProgMod/ProjetMod/MyProject'
+g++ -o coord.o -c coord.cpp -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
+ 
+g++ -o jeu.o -c jeu.cpp -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
+g++ -o primitives.o -c primitives.cpp -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
+g++ -o jeu coord.o anipop.o grilleGame.o jeu.o primitives.o -Wall -std=c++11 -g -O3 -lpdcurses -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -L "C:\SFML-2.5.1\lib" -lsfml-graphics -lsfml-window -lsfml-system 
+make: Leaving directory '/home/rmitia/ProgMod/ProjetMod/MyProject'
+ 

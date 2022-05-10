@@ -1,11 +1,12 @@
 #include <iostream>
 #include <vector>
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_TTF.h"
+#include <SDL2/SDL.h>
 #include <cstdlib>
 #include <ctime>
 #include <curses.h>
 #include <SFML/Graphics.hpp>
+#include <windows.h>
+#include <stdio.h>
 
 #include "primitives.hpp"
 #include "grilleGame.hpp"
@@ -15,7 +16,7 @@
 
 using namespace sf;
 using namespace std;
-void draw_filled_rectangle(SDL_Renderer  *window_renderer,SDL_Rect &rect,float x,float y,float taille,int r,int g,int b){
+void draw_filled_rectangle_sdl(SDL_Renderer  *window_renderer,SDL_Rect &rect,float x,float y,float taille,int r,int g,int b){
 	
 	rect.x = x;
 	rect.y = y;
@@ -38,14 +39,18 @@ int main( int argc, char* args[]){
         float TailleFenetre = 600;
         float TailleCase = TailleFenetre / TAILLEGRILLE;
         RenderWindow window(VideoMode(TailleFenetre, TailleFenetre), "FoxWar");
+        initscr();
         bool tourLapin = true;
+        int generation = 0;
         while (window.isOpen()){
         // on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
             sf::Event event;
             while (window.pollEvent(event)){
                 // évènement "fermeture demandée" : on ferme la fenêtre
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed){
+					endwin();
                     window.close();
+                }
             }
        
             window.clear(Color::White);
@@ -55,19 +60,25 @@ int main( int argc, char* args[]){
                 g.bougeRenard();
             }
             tourLapin = not tourLapin;
+            generation++;
             for(int i =0;i<TAILLEGRILLE;i++){
                 for(int j =0;j<TAILLEGRILLE;j++){
                     Animal a = g.getAnimal({i,j});
                     if(a.getEspece() == Espece::Lapin){
-                        draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color::Green);
+						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (165,255,0,255));
+                        else draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (0,255,0,255));
                     }
                     else if(a.getEspece() == Espece::Renard){
-                        draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color::Red);
+                        if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (255,192,203,255));
+                        else draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (255,0,0,255));
                     }
                 }
             }
             window.display();
-            sleep(seconds(0.5));
+            refresh();
+            cout<<"generation : "<<generation<<endl;
+            g.afficheDonnee();
+            sleep(milliseconds(10));
         }
     }
     else if(mode == "sdl"){
@@ -89,6 +100,7 @@ int main( int argc, char* args[]){
 		bool isOpen = true;
 		
         bool tourLapin = true;
+        int generation = 0;
 		while (isOpen){
 			//~ cout <<rand()%100<<endl;
 			while (SDL_PollEvent(&events)){
@@ -100,7 +112,8 @@ int main( int argc, char* args[]){
 						SDL_DestroyWindow( window );
 						window  = NULL;
 						window_renderer = NULL;
-						TTF_Quit();
+						endwin();
+						//~ TTF_Quit();
 						SDL_Quit(); 
 						break;
 				}
@@ -112,33 +125,48 @@ int main( int argc, char* args[]){
                 g.bougeRenard();
             }
             tourLapin = not tourLapin;
+            generation++;
             for(int i =0;i<TAILLEGRILLE;i++){
                 for(int j =0;j<TAILLEGRILLE;j++){
                     Animal a = g.getAnimal({i,j});
                     if(a.getEspece() == Espece::Lapin){
-						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 165,255,0);
-                        else draw_filled_rectangle(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 0,255,0);
+						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 165,255,0);
+                        else draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 0,255,0);
                     }
                     else if(a.getEspece() == Espece::Renard){
-						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,192,203);
-                        else draw_filled_rectangle(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,0,0);
+						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,192,203);
+                        else draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,0,0);
                     }
                 }
             }
             SDL_RenderPresent(window_renderer);
             refresh();
+            cout<<"generation : "<<generation<<endl;
             g.afficheDonnee();
             SDL_Delay(10);
 		}
 		
 	}
     if(mode == "classic"){
-        for(int i =0;i<10;i++){
-			g.bougeLapin();
-			g.bougeRenard();
+		initscr();
+		bool tourLapin = true;
+        int generation = 0;
+        while(true){		
+			refresh();
+			if(tourLapin){
+                g.bougeLapin();
+            }else{
+                g.bougeRenard();
+            }
+            tourLapin = not tourLapin;
+            generation++;
             cout<<g<<endl;
+            cout<<"generation : "<<generation<<endl;
+            g.afficheGrille();
             g.afficheDonnee();
-        }  
+            Sleep(1000);
+        } 
+        endwin();
     }
     return 0;
 }
