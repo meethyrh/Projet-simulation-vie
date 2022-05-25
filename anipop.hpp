@@ -105,7 +105,7 @@ class Animal{
     */
     string toString()const;
 
-    //procédure qui diminue le niveau de faim d'un animal; ne pourra plus manger si l'animal n'a pas dutout faim
+    //procédure qui augmente le niveau de Nourriture d'un animal; ne pourra plus manger si l'animal n'a pas dutout faim
     /*
     param: int (identifiant de l'animal)
     return void
@@ -126,7 +126,7 @@ class Animal{
     */
     bool meurt();
 
-    //Ajoute un animal à la population et met a jour la grille
+    //teste la possibilité de reproduction d'un animal
     /*
     param: 
     return bool True si il s'est reproduit et false sinon

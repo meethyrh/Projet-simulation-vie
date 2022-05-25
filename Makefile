@@ -1,29 +1,41 @@
 CXX=g++
-CXXFLAGS= -Wall -std=c++11 -g -O3 -I "C:\SFML-2.5.1\include" 
-LDFLAGS= -Wall -std=c++11 -g -O3 -lpdcurses -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -L "C:\SFML-2.5.1\lib" -lsfml-graphics -lsfml-window -lsfml-system 
-EXEC_FILES= test jeu
+CXXFLAGS= -Wall -std=c++11 -g -O3
+LDFLAGS= -Wall -std=c++11 -g -O3
+EXEC_FILES= jeu testCoord testAnipop testGG
 
 all: jeu
 # Regle generique
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-jeu: coord.o anipop.o grilleGame.o jeu.o primitives.o 
-	$(CXX) -o $@ $^ $(LDFLAGS)
-
-
-test: test.o coord.o anipop.o grilleGame.o 
+jeu: coord.o anipop.o grilleGame.o jeu.o  
 	$(CXX) -o $@ $^ $(LDFLAGS)
     
+testCoord: coord-test.o coord.o  
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+testAnipop: anipop-test.o anipop.o coord.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+testGG: grilleGame-test.o grilleGame.o anipop.o coord.o 
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
 coord.o: coord.hpp
 anipop.o : anipop.hpp coord.hpp
 grilleGame.o: anipop.hpp coord.hpp grilleGame.hpp
-primitives.o : primitives.hpp
-jeu.o: anipop.hpp coord.hpp grilleGame.hpp primitives.hpp
+jeu.o: anipop.hpp coord.hpp grilleGame.hpp 
 
-check: test
-	./test
+check: 
+	make checkCoord && make checkAnipop && make checkGG
+
+checkCoord: testCoord
+	./testCoord
+
+checkAnipop: testAnipop
+	./testAnipop
+
+checkGG: testGG
+	./testGG
 
 cleanLinux:
 	rm -f *.o $(EXEC_FILES) core.*

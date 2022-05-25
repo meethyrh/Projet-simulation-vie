@@ -1,6 +1,5 @@
 #include <array>
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include <exception>
 #include "grilleGame.hpp"
@@ -32,7 +31,7 @@ void Grille::setCase(int id,Coord c){
 ostream &operator<<(ostream &out, const Grille grille) {
     for(int i = 0; i<TAILLEGRILLE;i++){
         for(int j = 0; j<TAILLEGRILLE;j++){
-            out <<setw(2)<< grille.getCase({i,j}) << " ";
+            out << grille.getCase({i,j}) << " ";
         }
         out << endl;
     }
@@ -49,14 +48,6 @@ Game::Game(int probR,int probL):grille{},pop{}{
             ajouteAnimal(Espece::Lapin,c);
         }
     }
-}
-
-int Game::getCaseGame(Coord c)const{
-	return grille.getCase(c);
-}
-Animal Game::getAnimal(Coord c)const{
-    int id = grille.getCase(c);
-    return pop.get(id);
 }
 
 void Game::ajouteAnimal(Espece e,Coord c){
@@ -119,7 +110,10 @@ Ensemble Game::voisinsEspece(Coord c,Espece e)const{
 }
 
 
-
+Animal Game::getAnimal(Coord c)const{
+    int id = grille.getCase(c);
+    return pop.get(id);
+}
 bool Game::trouverAmour(Coord c){
 	if(not (versReprodEntreEspece) and not (versReprodSexuee))return true;
 	Animal a = getAnimal(c);
@@ -136,7 +130,6 @@ bool Game::trouverAmour(Coord c){
 	}
 	return false;
 }
-
 
 void Game::bougeLapin(){
 	Ensemble ensIds =pop.getIds();
@@ -212,17 +205,10 @@ void Game::verifieGrille()const{
 	for(int id= 0;id<TAILLEGRILLE * TAILLEGRILLE;id++){
 		Animal a = pop.get(id);
 		if( a.getEspece()!=Espece::Vide){
-			if(a.getId() != id)throw runtime_error("probleme d'assignation d'id des animaux dans pop");
+			if(a.getId() != id)throw runtime_error("probleme d'assignation d'id des animaux");
 			Coord c = a.getCoord();
 			int idAnimGrille = grille.getCase(c);
-			if(idAnimGrille != id)throw runtime_error("probleme de localisation des animaux entre grille et pop");
-		}
-	}
-	for(int c= 0;c<TAILLEGRILLE * TAILLEGRILLE;c++){
-		int id = grille.getCase(c);
-		if( id!=-1){
-			Animal a = pop.get(id);
-			if(a.getEspece()==Espece::Vide)throw runtime_error("animal dans grille n'existe pas dans la pop");
+			if(idAnimGrille != id)throw runtime_error("probleme de localisation des animaux");
 		}
 	}
 	cout<<"aucune dectection de probleme  avec verifieGrille";
@@ -238,7 +224,7 @@ ostream &operator<<(ostream &out, const Game g){
     return out;
 }
 
-void Game::afficheDonnee()const{
+void Game::afficheDonnee(){
 	cout<<"nombre de lapin : "<<pop.getNbLapin()<<endl;
     cout<<"nombre de renard : "<<pop.getNbRenard()<<endl;
     cout<<"duree de vie moyenne d'un lapin : "<<pop.getSommeDureeLapin() / pop.getNbMortLapin()<<endl;
@@ -251,6 +237,10 @@ void Game::afficheDonnee()const{
     //~ cout<<"2 : "<< pop.getNbMortLapin()<<endl;
     //~ cout<<"3 : "<<pop.getSommeDureeRenard()<<endl;
     //~ cout<<"4 : "<< pop.getNbMortRenard()<<endl;
+}
+
+int Game::getCaseGame(Coord c) const{
+	return grille.getCase(c);
 }
 
 void Game::afficheGrille()const{

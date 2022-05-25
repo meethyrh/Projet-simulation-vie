@@ -3,9 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <exception>
-//~ #include "doctest.h"
 #include "coord.hpp"
-
 
 using namespace std;
 Coord::Coord(){}
@@ -47,7 +45,6 @@ Ensemble Coord::voisines()const{
     return e;
 }
 
-
 ostream & operator<<(ostream &out,const Ensemble e) { 
     out<<"{";
     int ca = e.cardinal();
@@ -86,3 +83,6 @@ int Ensemble::tire(){
     card--;
     return tmp;
 };
+
+
+

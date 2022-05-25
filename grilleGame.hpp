@@ -145,21 +145,22 @@ class Game{
     param:
     return: void
     */
-    void afficheDonnee()const;
+    void afficheDonnee();
+
+
+    // renvoie la valeure de la case au coordonnée c dans la grille du jeu;
+    /*
+    param: Coordonnés de la case à tester
+    return: int; l'identifiant de l'animal
+    */
+    int getCaseGame(Coord c) const;
 
     //affiche la grille
     /*
     param:
     return: void
     */
-    void afficheGrille()const;
-
-    //Renvoi la valeure contenue dans une case de coordonnée c dans la grille
-    /*
-    param: coordonnée de la case
-    return: int; la valeur dans la case
-    */
-    int getCaseGame(Coord c)const;
+    void afficheGrille() const;
     
 }; 
 ostream &operator<<(ostream &out, const Game g);
