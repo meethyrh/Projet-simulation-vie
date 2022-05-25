@@ -1,1 +1,1 @@
-Projet de Programmation modulaire en partenariat avec Quentin ..., 
+Projet de Programation modulaire en partenariat avec Quentin Ehrmann.
