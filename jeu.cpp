@@ -1,172 +1,142 @@
 #include <iostream>
 #include <vector>
-#include <SDL2/SDL.h>
-#include <cstdlib>
-#include <ctime>
-#include <curses.h>
-#include <SFML/Graphics.hpp>
-#include <windows.h>
-#include <stdio.h>
+#include <ncurses.h>
+#include <string>
 
-#include "primitives.hpp"
 #include "grilleGame.hpp"
 
-//~ #define DOCTEST_CONFIG_IMPLEMENT
-//~ #include "doctest.h"
+//#define DOCTEST_CONFIG_IMPLEMENT
+//#include "doctest.h"
 
-using namespace sf;
 using namespace std;
-void draw_filled_rectangle_sdl(SDL_Renderer  *window_renderer,SDL_Rect &rect,float x,float y,float taille,int r,int g,int b){
-	
-	rect.x = x;
-	rect.y = y;
-	rect.w = taille;
-	rect.h = taille;
 
-	SDL_SetRenderDrawColor(window_renderer, r, g, b, 255);
-	SDL_RenderFillRect(window_renderer, &rect);
-	SDL_RenderDrawRect(window_renderer, &rect);
-	SDL_SetRenderDrawColor(window_renderer, 255,255, 255, 255);
-}
-int main( int argc, char* args[]){
-	srand(time(NULL));
-    string mode = "sdl";
-    Game g{7,20};
-    //~ Game g{0,0};
-	//~ g.ajouteAnimal(Espece::Lapin,{3,3});
-    
-    if(mode == "sfml"){
-        float TailleFenetre = 600;
-        float TailleCase = TailleFenetre / TAILLEGRILLE;
-        RenderWindow window(VideoMode(TailleFenetre, TailleFenetre), "FoxWar");
-        initscr();
-        bool tourLapin = true;
-        int generation = 0;
-        while (window.isOpen()){
-        // on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
-            sf::Event event;
-            while (window.pollEvent(event)){
-                // évènement "fermeture demandée" : on ferme la fenêtre
-                if (event.type == sf::Event::Closed){
-					endwin();
-                    window.close();
-                }
+
+void dessine(WINDOW *win, Game g){
+
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    //init_pair(3, COLOR_GREEN, COLOR_GREEN);
+    wprintw(win, "\n");
+    for(int i = 0; i<TAILLEGRILLE;i++){
+        wprintw(win, "   ");
+        wrefresh(win);
+        for(int j = 0; j<TAILLEGRILLE;j++){
+            if(g.getAnimal({i,j}).getEspece() == Espece::Lapin){
+                string animal = g.getAnimal({i,j}).toString();
+
+                wattron(win,COLOR_PAIR(2)); wattron(win,A_BOLD);
+                wprintw(win, animal.c_str());wprintw(win, " ");
+                wattroff(win, COLOR_PAIR(2)); wattroff(win,A_BOLD);
+
+                wrefresh(win);
             }
-       
-            window.clear(Color::White);
-            if(tourLapin){
-                g.bougeLapin();
-            }else{
-                g.bougeRenard();
+            else if(g.getAnimal({i,j}).getEspece() == Espece::Renard){
+                string animal = g.getAnimal({i,j}).toString();
+
+                wattron(win, A_BOLD);
+                wattron(win, COLOR_PAIR(1));
+                wprintw(win, animal.c_str());wprintw(win, " ");
+                wattroff(win, COLOR_PAIR(1));
+                wattroff(win, A_BOLD);
+
+                wrefresh(win);
+            } else {
+                string animal = g.getAnimal({i,j}).toString();
+                wattron(win, A_INVIS);
+                wprintw(win, animal.c_str());wprintw(win, " ");
+                wattroff(win, A_INVIS);
+                wrefresh(win);
             }
-            tourLapin = not tourLapin;
-            generation++;
-            for(int i =0;i<TAILLEGRILLE;i++){
-                for(int j =0;j<TAILLEGRILLE;j++){
-                    Animal a = g.getAnimal({i,j});
-                    if(a.getEspece() == Espece::Lapin){
-						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (165,255,0,255));
-                        else draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (0,255,0,255));
-                    }
-                    else if(a.getEspece() == Espece::Renard){
-                        if(a.getSexe() and versReprodSexuee)draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (255,192,203,255));
-                        else draw_filled_rectangle(window, Point{i* TailleCase,j*TailleCase}, TailleCase, TailleCase, Color (255,0,0,255));
-                    }
-                }
-            }
-            window.display();
-            refresh();
-            cout<<"generation : "<<generation<<endl;
-            g.afficheDonnee();
-            sleep(milliseconds(10));
         }
+        wprintw(win,""); wprintw(win,"\n");
+        wrefresh(win);
     }
-    else if(mode == "sdl"){
-		SDL_Window     *window;
-		SDL_Renderer  *window_renderer;
-		SDL_Rect rect;
-		SDL_Init(SDL_INIT_VIDEO);
-		initscr();	
-		//~ TTF_Init();
-		float TailleFenetre = 600;
-        float TailleCase = TailleFenetre / TAILLEGRILLE;
-		SDL_CreateWindowAndRenderer(TailleFenetre, TailleFenetre, SDL_WINDOW_SHOWN, &window, &window_renderer);
-		//~ TTF_Font* font;
-		//~ font = TTF_OpenFont("arial_narrow_7.ttf",200);//"arial_narrow_7.ttf"
-		//~ if ( !font ) {
-			//~ cout << "Failed to load font: " << TTF_GetError() << endl;
-		//~ }
-		SDL_Event events;
-		bool isOpen = true;
-		
-        bool tourLapin = true;
-        int generation = 0;
-		while (isOpen){
-			//~ cout <<rand()%100<<endl;
-			while (SDL_PollEvent(&events)){
-				switch (events.type){
-					case SDL_QUIT:
-						isOpen = false;
-						//~ TTF_CloseFont(font);
-						SDL_DestroyRenderer( window_renderer );
-						SDL_DestroyWindow( window );
-						window  = NULL;
-						window_renderer = NULL;
-						endwin();
-						//~ TTF_Quit();
-						SDL_Quit(); 
-						break;
-				}
-			}
-			SDL_RenderClear(window_renderer);
-			if(tourLapin){
-                g.bougeLapin();
-            }else{
-                g.bougeRenard();
-            }
-            tourLapin = not tourLapin;
-            generation++;
-            for(int i =0;i<TAILLEGRILLE;i++){
-                for(int j =0;j<TAILLEGRILLE;j++){
-                    Animal a = g.getAnimal({i,j});
-                    if(a.getEspece() == Espece::Lapin){
-						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 165,255,0);
-                        else draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 0,255,0);
-                    }
-                    else if(a.getEspece() == Espece::Renard){
-						if(a.getSexe() and versReprodSexuee)draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,192,203);
-                        else draw_filled_rectangle_sdl(window_renderer,rect, i* TailleCase,j*TailleCase, TailleCase, 255,0,0);
-                    }
-                }
-            }
-            SDL_RenderPresent(window_renderer);
-            refresh();
-            cout<<"generation : "<<generation<<endl;
-            g.afficheDonnee();
-            SDL_Delay(10);
-		}
-		
-	}
-    if(mode == "classic"){
-		initscr();
-		bool tourLapin = true;
-        int generation = 0;
-        while(true){		
-			refresh();
-			if(tourLapin){
-                g.bougeLapin();
-            }else{
-                g.bougeRenard();
-            }
-            tourLapin = not tourLapin;
-            generation++;
-            cout<<g<<endl;
-            cout<<"generation : "<<generation<<endl;
-            g.afficheGrille();
-            g.afficheDonnee();
-            Sleep(1000);
+}
+
+int main(){
+
+
+    // if(not has_colors()){
+    //     printw("Your terminal doesn't support colors...");
+    //     getch();
+    //     return -1;
+    // }
+
+    initscr();
+
+    start_color();
+    init_pair(4,COLOR_GREEN, COLOR_BLACK);
+
+    noecho();
+    curs_set(0);
+
+    int height = 22;
+    int width = 47; 
+    int y = 0;
+    int x = 5;
+
+    Game g{5,20};
+    bool tourLapin = true;
+
+    move(0,0);
+    printw("début du jeu, appuyez sur une touche... \n");
+    printw("note: à chaque fois que vous passez une étape, appuyez sur une touche \n");
+    refresh();
+    getch();
+    clear();
+
+    //création de la fenêtre de jeu
+    WINDOW * win = newwin(height, width, y, x);
+    refresh();
+
+    //création de la fenêtre des données
+    WINDOW * data = newwin(height, width, y, x+width+1);
+    refresh();
+
+    curs_set(0);
+
+    wrefresh(win);
+    wrefresh(data);
+    refresh();
+
+    wattron(data,COLOR_PAIR(4));
+    wprintw(data, g.afficheDonnee().c_str());
+    wattroff(data,COLOR_PAIR(4));
+    dessine(win, g);
+    box(win,0,0);
+    wrefresh(win);
+    wrefresh(data);
+
+    while(true){
+        if(tourLapin){
+            g.bougeLapin();
+            dessine(win, g);
+            box(win,0,0);
+            wattron(data,COLOR_PAIR(4));
+            wprintw(data, g.afficheDonnee().c_str());
+            wrefresh(win);
+            wattroff(data,COLOR_PAIR(4));
+            wrefresh(data);
+        } else {
+            g.bougeRenard();
+            dessine(win, g);
+            box(win,0,0);
+            wattron(data,COLOR_PAIR(4));
+            wprintw(data, g.afficheDonnee().c_str());
+            wrefresh(win);
+            wattroff(data,COLOR_PAIR(4));
+            wrefresh(data);
+            
         } 
-        endwin();
+        tourLapin = not tourLapin;
+        wclear(win);
+        wclear(data);
+
+        //pour eviter que le terminal aille trop vite
+        if(tourLapin){
+            napms(200);
+        }
     }
     return 0;
 }
